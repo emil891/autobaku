@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ avto.marka }} {{ avto.model }} - AutoBaku</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        .detay-konteyner { max-width: 1050px; margin: 30px auto; color: #252525; }
+        .detay-basliq { border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px; }
+        .detay-basliq h1 { font-size: 24px; margin: 0; }
+        
+        .detay-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        
+        .sol-sutun .esas-sekil { width: 100%; border-radius: 8px; object-fit: cover; max-height: 500px; margin-bottom: 30px; }
+        .xususiyyetler { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 30px; font-size: 15px; }
+        .xus-setir { display: flex; justify-content: space-between; border-bottom: 1px dashed #ddd; padding-bottom: 5px; }
+        .xus-ad { color: #888; }
+        .xus-deyer { font-weight: bold; }
+
+        .aksiyalar { display: flex; gap: 20px; color: #555; font-size: 15px; margin-bottom: 20px; justify-content: flex-start; cursor: pointer; user-select: none; }
+        .aksiyalar span:hover { color: #ca1016; }
+        
+        .satici-paneli { background: #f2f4f7; padding: 25px; border-radius: 12px; }
+        .qiymet-setri { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .qiymet-setri .qiymet { font-size: 32px; font-weight: bold; color: #252525; }
+        .qiymet-setri .tarixce { font-size: 14px; color: #4a90e2; text-decoration: none; }
+        
+        .satici-info { display: flex; justify-content: space-between; margin-bottom: 25px; }
+        .satici-ad { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .satici-seher { font-size: 14px; color: #4a90e2; margin-bottom: 8px; }
+        .satici-tarix { font-size: 13px; color: #888; }
+        .satici-avatar { width: 50px; height: 50px; background: #dfe3e8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; }
+
+        .nomre-btn { width: 100%; background: #46b864; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 12px; transition: background 0.2s; }
+        .nomre-btn:hover { background: #3da458; }
+        .nomre-btn .ust-yazi { font-size: 14px; margin-bottom: 3px; }
+        .nomre-btn .alt-yazi { font-size: 20px; font-weight: bold; }
+
+        .mesaj-btn { width: 100%; background: #3d8ee8; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; margin-bottom: 25px; }
+        .mesaj-btn:hover { background: #347bc9; }
+
+        .xidmetler { display: flex; justify-content: space-between; border-top: 1px solid #e1e4e8; padding-top: 15px; text-align: center; }
+        .xidmet { font-size: 13px; cursor: pointer; }
+        .xidmet:hover { opacity: 0.7; }
+        .xidmet-ad { font-weight: bold; margin-bottom: 4px; display: block; }
+        .x-ireli { color: #55b85d; }
+        .x-vip { color: #e63946; }
+        .x-premium { color: #f4a261; }
+        .x-qiymet { color: #888; font-size: 12px; }
+    </style>
+</head>
+<body style="background: #fff; font-family: Arial, sans-serif; margin: 0;">
+
+    <header class="ust-hisse">
+        <div class="ust-konteyner">
+            <a href="/" class="sayt-loqo">AUTO<span>BAKU</span></a>
+        </div>
+    </header>
+
+    <div class="detay-konteyner">
+        <div class="detay-basliq">
+            <h1>{{ avto.marka }} {{ avto.model }}, {{ avto.muherrik }}, {{ avto.il }} il, {{ avto.yurush }} km</h1>
+        </div>
+
+        <div class="detay-grid">
+            <div class="sol-sutun">
+                {% if avto.shekil %}
+                    <img src="{{ avto.shekil.url }}" class="esas-sekil" alt="{{ avto.marka }}">
+                {% endif %}
+
+                <div class="xususiyyetler">
+                    <div class="xus-setir"><span class="xus-ad">Şəhər</span> <span class="xus-deyer">{{ avto.seher }}</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Marka</span> <span class="xus-deyer">{{ avto.marka }}</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Model</span> <span class="xus-deyer">{{ avto.model }}</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Buraxılış ili</span> <span class="xus-deyer">{{ avto.il }}</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Mühərrik</span> <span class="xus-deyer">{{ avto.muherrik }}</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Yürüş</span> <span class="xus-deyer">{{ avto.yurush }} km</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Kredit</span> <span class="xus-deyer">{% if avto.kredit %}Var{% else %}Yoxdur{% endif %}</span></div>
+                    <div class="xus-setir"><span class="xus-ad">Barter</span> <span class="xus-deyer">{% if avto.barter %}Mümkündür{% else %}Yoxdur{% endif %}</span></div>
+                </div>
+            </div>
+
+            <div class="sag-sutun">
+                <div class="aksiyalar">
+                    <!-- Ürək düyməsi: klikləndikdə Seçilmişlərə əlavə edir -->
+                    <span onclick="toggleFavori(this, '{{ avto.id }}')" style="color: {% if avto.id in request.session.favoriler %}#ca1016{% else %}#555{% endif %};">
+                        {% if avto.id in request.session.favoriler %}♥ Seçilmişlərdən çıxar{% else %}♡ Seçilmişlərdə saxla{% endif %}
+                    </span>
+                    <span onclick="alert('Şikayətiniz qeydə alındı. Təşəkkür edirik!')">⚑ Şikayət et</span>
+                </div>
+
+                <div class="satici-paneli">
+                    <div class="qiymet-setri">
+                        <div class="qiymet">{{ avto.qiymet }} ₼</div>
+                        <a href="#" class="tarixce" onclick="alert('Qiymət tarixçəsi hələ yoxdur.')">Qiymət tarixçəsi</a>
+                    </div>
+
+                    <div class="satici-info">
+                        <div>
+                            <div class="satici-ad">AutoBaku İstifadəçisi</div>
+                            <div class="satici-seher">{{ avto.seher }}</div>
+                            <div class="satici-tarix">Satıcı bu gündən AutoBaku'da</div>
+                        </div>
+                        <div class="satici-avatar">👤</div>
+                    </div>
+
+                    <!-- Nömrəni göstər düyməsi -->
+                    <button class="nomre-btn" onclick="nomreniAc(this)">
+                        <span class="ust-yazi">Nömrəni göstər</span>
+                        <span class="alt-yazi">📞 +994 •••</span>
+                    </button>
+
+                    <!-- Mesaj yaz düyməsi -->
+                    <button class="mesaj-btn" onclick="alert('Mesaj sistemi tezliklə aktiv olacaq!')">
+                        💬 Mesaj yaz
+                    </button>
+
+                    <div class="xidmetler">
+                        <div class="xidmet" onclick="alert('İrəli çək xidməti üzərində iş gedir.')">
+                            <span class="xidmet-ad x-ireli">İrəli çək ⬆</span>
+                            <span class="x-qiymet">3.00 ₼-dan</span>
+                        </div>
+                        <div class="xidmet" onclick="alert('VIP xidməti üzərində iş gedir.')">
+                            <span class="xidmet-ad x-vip">VIP 💎</span>
+                            <span class="x-qiymet">5.00 ₼-dan</span>
+                        </div>
+                        <div class="xidmet" onclick="alert('Premium xidməti üzərində iş gedir.')">
+                            <span class="xidmet-ad x-premium">Premium 👑</span>
+                            <span class="x-qiymet">7.00 ₼-dan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Funksionallıq üçün JavaScript Kodları -->
+    <script>
+        // Nömrəni açmaq üçün funksiya
+        function nomreniAc(btn) {
+            // Django-dan nömrəni təhlükəsiz şəkildə alırıq, əgər boşdursa xəbərdarlıq yazırıq
+            let telefon = "{{ avto.telefon|default:'Nömrə qeyd olunmayıb'|escapejs }}";
+            
+            btn.querySelector('.ust-yazi').innerText = 'Nömrə';
+            btn.querySelector('.alt-yazi').innerText = '📞 ' + telefon; 
+            btn.style.background = '#3da458';
+        }
+
+        // Seçilmişlərə əlavə et/çıxar funksiyası
+        function toggleFavori(element, avtoId) {
+            fetch(`/favori-toggle/${avtoId}/`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.durum === 'elave_olundu') {
+                        element.innerHTML = '♥ Seçilmişlərdən çıxar';
+                        element.style.color = '#ca1016';
+                    } else {
+                        element.innerHTML = '♡ Seçilmişlərdə saxla';
+                        element.style.color = '#555';
+                    }
+                })
+                .catch(err => console.error("Xəta baş verdi:", err));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoBaku — Avtomobil elanları</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body style="background: #f3f4f6; margin: 0; font-family: Arial, sans-serif;">
+
+<header class="ust-hisse">
+    <div class="ust-konteyner">
+        <a href="/" class="sayt-loqo">AUTO<span>BAKU</span></a>
+
+        <nav class="menyu">
+            <a href="/">Ana səhifə</a>
+            <a href="{% url 'secilmisler' %}">Seçilmişlər</a>
+            <a href="#elanlar">Avtomobillər</a>
+            <a href="/haqqimda/">Haqqımızda</a>
+        </nav>
+
+        <a href="{% url 'yeni_elan' %}" class="elan-duymesi">+ Elan yerləşdir</a>
+    </div>
+</header>
+
+<main class="esas-konteyner">
+
+    <section class="basliq-hisse">
+        <h1>Avtomobilini tap!</h1>
+        <p>Minlərlə elan arasından sənə uyğun avtomobili seç.</p>
+    </section>
+
+    <!-- AXTARIŞ FORMASI -->
+    <section class="turbo-axtaris">
+        <form action="#elanlar" method="get" class="turbo-form">
+            <div class="axtaris-grid">
+                <select name="marka" class="form-input">
+                    <option value="">Marka</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Mercedes-Benz">Mercedes-Benz</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Hyundai">Hyundai</option>
+                    <option value="Kia">Kia</option>
+                </select>
+                
+                <select name="model" class="form-input">
+                    <option value="">Model</option>
+                </select>
+
+                <div class="veziyyet-btnlari">
+                    <label><input type="radio" name="veziyyet" value="hamisi" checked> Hamısı</label>
+                    <label><input type="radio" name="veziyyet" value="yeni"> Yeni</label>
+                    <label><input type="radio" name="veziyyet" value="surulmus"> Sürülmüş</label>
+                </div>
+
+                <select name="seher" class="form-input">
+                    <option value="">Şəhər</option>
+                    <option value="Baki">Bakı</option>
+                    <option value="Sumqayit">Sumqayıt</option>
+                </select>
+
+                <div class="qiymet-qrup">
+                    <input type="number" name="qiymet" placeholder="Qiymət, maks." class="form-input">
+                    <select name="valyuta" class="form-input valyuta-secim">
+                        <option value="AZN">AZN</option>
+                        <option value="USD">USD</option>
+                    </select>
+                </div>
+
+                <div class="kredit-barter">
+                    <label><input type="checkbox" name="kredit"> Kredit</label>
+                    <label><input type="checkbox" name="barter"> Barter</label>
+                </div>
+
+                <select name="ban_novu" class="form-input">
+                    <option value="">Ban növü</option>
+                </select>
+
+                <div class="il-qrup">
+                    <select name="il" class="form-input">
+                        <option value="">İl, seçin</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="axtaris-alt-panel">
+                <p class="statistika">Bu gün: 1327 yeni elan</p>
+                <button type="submit" class="goster-btn">Elanları göstər</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- ELANLAR BÖLMƏSİ (YENİLƏNMİŞ DİZAYN) -->
+    <section id="elanlar" class="elan-bolmesi" style="margin-top: 40px;">
+        <div class="bolme-basligi" style="margin-bottom: 20px; border-bottom: 1px solid #d8d8d8; padding-bottom: 10px;">
+            <h2 style="color: #666; font-size: 15px; text-transform: uppercase; font-weight: bold; margin: 0; letter-spacing: 0.5px;">PREMİUM ELANLAR</h2>
+        </div>
+
+        <div class="elanlar" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px;">
+        {% for avtomobil in avtomobiller %}
+            <a href="{% url 'elan_detay' avtomobil.id %}" style="text-decoration: none; display: block; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); color: #252525; position: relative;" class="elan-karti">
+
+                <div class="sekil-konteyner" style="position: relative; height: 160px; background: #e0e0e0;">
+                    
+                    <!-- Ürək ikonu -->
+                    <div style="position: absolute; top: 10px; right: 10px; font-size: 26px; cursor: pointer; text-shadow: 0 1px 4px rgba(0,0,0,0.6); z-index: 10; color: {% if avtomobil.id in request.session.favoriler %}#ca1016{% else %}white{% endif %};"
+                         onclick="event.preventDefault(); event.stopPropagation(); let el = this; 
+                         fetch('{% url 'favori_toggle' avtomobil.id %}')
+                             .then(res => res.json())
+                             .then(data => {
+                                 if(data.durum === 'elave_olundu') {
+                                     el.innerText = '♥'; 
+                                     el.style.color = '#ca1016';
+                                 } else {
+                                     el.innerText = '♡'; 
+                                     el.style.color = 'white';
+                                 }
+                             });"
+                         title="Seçilmişlərə əlavə et">{% if avtomobil.id in request.session.favoriler %}♥{% else %}♡{% endif %}</div>
+
+                    <!-- Alt Sol - Salon Etiketi -->
+                    {% if avtomobil.yeni %}
+                    <div style="position: absolute; bottom: 8px; left: 8px; background: #4a90e2; color: white; border-radius: 4px; padding: 3px 8px; font-size: 11px; font-weight: bold; z-index: 5;">
+                        Salon
+                    </div>
+                    {% endif %}
+
+                    <!-- Alt Sağ - VIP / Premium İkonları -->
+                    <div style="position: absolute; bottom: 8px; right: 8px; display: flex; gap: 4px; z-index: 5;">
+                        {% if avtomobil.is_vip %}
+                            <div style="background: white; border-radius: 4px; padding: 3px 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); font-size: 11px; color: #e63946;" title="VIP">💎</div>
+                        {% endif %}
+                        {% if avtomobil.is_premium %}
+                            <div style="background: white; border-radius: 4px; padding: 3px 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); font-size: 11px; color: #f4a261;" title="Premium">👑</div>
+                        {% endif %}
+                    </div>
+
+                    {% if avtomobil.shekil %}
+                        <img
+                            src="{{ avtomobil.shekil.url }}"
+                            alt="{{ avtomobil.marka }} {{ avtomobil.model }}"
+                            style="width: 100%; height: 100%; object-fit: cover;"
+                        >
+                    {% else %}
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #888;">
+                            ŞƏKİL YOXDUR
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="elan-melumat" style="padding: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 18px;">{{ avtomobil.qiymet }} ₼</h3>
+                    <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: bold;">{{ avtomobil.marka }} {{ avtomobil.model }}</p>
+                    <p style="margin: 0; font-size: 13px; color: #888; line-height: 1.4;">
+                        {{ avtomobil.il }}, {{ avtomobil.muherrik }}, {{ avtomobil.yurush }} km<br>
+                        {{ avtomobil.seher }}
+                    </p>
+                </div>
+
+            </a>
+        {% empty %}
+            <div class="bos-elan" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #888;">
+                <h3>Hələ avtomobil elanı yoxdur</h3>
+            </div>
+        {% endfor %}
+        </div>
+    </section

@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Seçilmiş elanlar - AutoBaku</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+<header class="ust-hisse">
+    <div class="ust-konteyner">
+        <a href="/" class="sayt-loqo">AUTO<span>BAKU</span></a>
+        <nav class="menyu">
+            <a href="/">Ana səhifə</a>
+            <a href="{% url 'secilmisler' %}">Seçilmişlər</a>
+            <a href="/haqqimda/">Haqqımızda</a>
+        </nav>
+    </div>
+</header>
+
+<main class="esas-konteyner">
+    <section class="basliq-hisse">
+        <h1>Seçilmiş avtomobillər</h1>
+        <p>Bəyəndiyiniz və yadda saxladığınız elanlar.</p>
+    </section>
+
+    <section class="elan-bolmesi">
+        <div class="elanlar">
+        {% for avtomobil in avtomobiller %}
+            <a href="{% url 'elan_detay' avtomobil.id %}" style="text-decoration: none; display: block;" class="elan-karti">
+                <div class="sekil-konteyner" style="position: relative;">
+                    {% if avtomobil.shekil %}
+                        <img src="{{ avtomobil.shekil.url }}" alt="{{ avtomobil.marka }}" class="avtomobil-sekli">
+                    {% else %}
+                        <div class="elan-sekil-yeri">AVTOMOBİL</div>
+                    {% endif %}
+                </div>
+                <div class="elan-melumat">
+                    <h3>{{ avtomobil.qiymet }} AZN</h3>
+                    <p>{{ avtomobil.marka }} {{ avtomobil.model }}</p>
+                    <p>{{ avtomobil.il }} · {{ avtomobil.muherrik }} · {{ avtomobil.yurush }} km</p>
+                </div>
+            </a>
+        {% empty %}
+            <div class="bos-elan" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <h3>Hələ heç bir avtomobil seçilməyib</h3>
+                <p><a href="/" style="color: #ca1016;">Ana səhifəyə qayıdıb elan bəyənin</a></p>
+            </div>
+        {% endfor %}
+        </div>
+    </section>
+</main>
+
+<footer class="alt-hisse">
+    <p>AutoBaku © 2026</p>
+</footer>
+
+</body>
+</html>
